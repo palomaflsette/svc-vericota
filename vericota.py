@@ -29,7 +29,7 @@ class Vericota:
 
     def atualizacao_britech(self):
         FROM_MAIL = self.sender
-        TO_MAIL = ['tBPO@britech.com.br',
+        TO_MAIL = ['BPO@britech.com.br',
                    'adm.fiduciaria@ativainvestimentos.com.br']
         CC_MAIL = ['mateus.silva@ativainvestimentos.com.br', 'paloma.sette@ativainvestimentos.com.br']
         SUBJECT = 'Cotas atuais dos fundos + Posições (BM&F, TCF, VCF e garantias)'
@@ -63,10 +63,9 @@ class Vericota:
                             <ul class="lista">
                                 <li class="item-lista">Posições em fundos;</li>
                                 <li class="item-lista">Posições em TCF (Proventos);</li>
-                                <li class="item-lista">Posições em VCF (Ações, OPC e termo);</li>
                                 <li class="item-lista">Posições em BM&F;</li>
                                 <li class="item-lista">Garantia (depositada e requerida);</li>
-                                <li class="item-lista">BTC (Tomador e Doador).</li><br>
+                                <li class="item-lista">Unificação: BTC Tomador; BTC Doador; Posições em VCF (AOT - Ações, OPC e termo).</li><br>
                             </ul>
                         </div>
                     </body>"""               
@@ -95,21 +94,23 @@ class Vericota:
         }
         fundos_cotas_com_cnpj.rename(columns=novo_nome_colunas, inplace=True)
         fundos_cotas_com_cnpj= fundos_cotas_com_cnpj.dropna(subset=['CNPJ'])
+        
+        #unificando parte das informações solicitadas
+        self.merging_info("docs\\_btctomad_btcdoad_aot.xlsx")
+        
         # Salvando os arquivos para enviar por e-mail
         dic = {
                 'docs\\fundos_cotasAtuais.xlsx':        fundos_cotas_com_cnpj,
                 'docs\\tcf_posi_proventos.xlsx':        Dbconn().tcf_sinacor_posi_proventos(),
-                'docs\\vcf_posi_acoes_opc_termo.xlsx':  Dbconn().vcf_sinacor_posi_acoes_opc_termo(),
                 'docs\\posicoes_bmf.xlsx':              Dbconn().sinacor_posicoes_bmf(),
                 'docs\\posicoes_cli_fundos.xlsx':       Dbconn().portalativa_posi_fundos(),
                 'docs\\garantias_req_dep.xlsx':         Dbconn().portalativa_risco_garantia(),
                 'docs\\portalativa_riscodgar.xlsx':     Dbconn().portalativa_riscodgar(),
-                'docs\\tcfposi_btc_doad.xlsx':          Dbconn().tcfposi_btc_doad(),
-                'docs\\tcfposi_btc_toma.xlsx':          Dbconn().tcfposi_btc_toma()
                }
         for path, df in dic.items():
             df.to_excel(path, index=False)
             PATHS_ATTACHS.append(path)
+        PATHS_ATTACHS.append("docs\\_btctomad_btcdoad_aot.xlsx")
         
         send_mail_smtplib(FROM_MAIL,
                   PASS_CENTRAL_OP, 
@@ -252,6 +253,23 @@ class Vericota:
         df2.reset_index(drop=True, inplace=True)
         
         return df2
+
+    def merging_info(self, doc_path):
+        #junção das informações (BTC doador, tomador, ações-OPC-termo)
+        a = Dbconn().tcfposi_btc_toma()
+        b = Dbconn().tcfposi_btc_doad()
+        c = Dbconn().vcf_sinacor_posi_acoes_opc_termo()
+
+        merged_df1 = pd.merge(a, b, on='COD_CLI', how='outer')
+        merged_df2 = pd.merge(merged_df1, c, on='COD_CLI', how='outer')
+
+        with pd.ExcelWriter(doc_path, engine='xlsxwriter') as writer:
+            merged_df2.to_excel(
+                writer, sheet_name='BTCTOMA+BTCDOAD+AOT', index=False)
+            a.to_excel(writer, sheet_name='BTC_TOMADOR', index=False)
+            b.to_excel(writer, sheet_name='BTC_DOADOR', index=False)
+            c.to_excel(writer, sheet_name='AOT(AÇÕES, OPC, TERMO)', index=False)
+
 
 
     def fundos_cotas_atualizadas(self,df, specific_date):

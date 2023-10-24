@@ -223,10 +223,14 @@ class Dbconn:
                                     
         result = self.cur_oracle.execute(query).fetchall()
         df = pd.DataFrame(result,
-                                columns=['cod_cli', 'idt_ativ', 
-                                        'nome_cli', 'cod_isin', 
-                                        'tipo_merc', 'cod_neg', 
-                                        'qtde_tot', 'qtde_disp'])
+                                columns=['COD_CLI', 
+                                        'IDT_ATIV_AOT', 
+                                        'NOME_CLI',
+                                        'COD_ISIN_AOT', 
+                                        'TIPO_MERC_AOT', 
+                                        'COD_NEG_AOT', 
+                                        'QTDE_TOT_AOT', 
+                                        'QTDE_DISP_AOT'])
         return df
 
 
@@ -399,8 +403,14 @@ class Dbconn:
                             columns=['ID', 
                                     'DATAPOSICAO', 
                                     'COD', 
-                                    'TIPO', 'ATIVO', 'DATADEPOSITO', 'DATAVENCIMENTO',
-                                    'CODIGONEGOCIACAO', 'EMPRESA', 'QUANTIDADE', 'VALOR'])
+                                    'TIPO', 
+                                    'ATIVO', 
+                                    'DATADEPOSITO', 
+                                    'DATAVENCIMENTO',
+                                    'CODIGONEGOCIACAO', 
+                                    'EMPRESA', 
+                                    'QUANTIDADE', 
+                                    'VALOR'])
         return df
     
     def tcfposi_btc_doad(self):
@@ -437,16 +447,16 @@ class Dbconn:
         result = self.cur_oracle.execute(query).fetchall()
         df = pd.DataFrame(result,
                             columns=['COD_CLI', 
-                            'COD_ISIN', 
-                            'TIPO_MERC_BTC',  
-                            'TIPO_MERC',
-                            'QTDE_ACOE',
-                            'PREC_MED',
-                            'TAXA_REMU',
-                            'VAL_BRUT',
-                            'VAL_IR',
-                            'VAL_LIQ',
-                            'VAL_BRUT_DOAD'])
+                            'COD_ISIN_BTCDOAD', 
+                            'TIPO_MERC_BTC_BTCDOAD',  
+                            'TIPO_MERC_BTCDOAD',
+                            'QTDE_ACOE_BTCDOAD',
+                            'PREC_MED_BTCDOAD',
+                            'TAXA_REMU_BTCDOAD',
+                            'VAL_BRUT_BTCDOAD',
+                            'VAL_IR_BTCDOAD',
+                            'VAL_LIQ_BTCDOAD',
+                            'VAL_BRUT_DOAD_BTCDOAD'])
         return df
     
     def tcfposi_btc_toma(self):
@@ -456,7 +466,6 @@ class Dbconn:
                             TAXA_REMU,
                             TAXA_COMI,
                             QTDE_ACOE_ORIG,
-                            COD_CLI_CANT,
                             VAL_BRUT,
                             VAL_COMI,
                             VAL_BRUT_DOAD,
@@ -484,42 +493,14 @@ class Dbconn:
         result = self.cur_oracle.execute(query).fetchall()
         df = pd.DataFrame(result,
                             columns=['COD_CLI',
-                            'COD_ISIN',
-                            'PREC_MED',
-                            'TAXA_REMU',
-                            'TAXA_COMI',
-                            'QTDE_ACOE_ORIG',
-                            'COD_CLI_CANT',
-                            'VAL_BRUT',
-                            'VAL_COMI',
-                            'VAL_BRUT_DOAD',
-                            'VAL_LIQ',
-                            'VAL_EMOL_CBLC'])
+                            'COD_ISIN_BTCTOMA',
+                            'PREC_MED_BTCTOMA',
+                            'TAXA_REMU_BTCTOMA',
+                            'TAXA_COMI_BTCTOMA',
+                            'QTDE_ACOE_ORIG_BTCTOMA',
+                            'VAL_BRUT_BTCTOMA',
+                            'VAL_COMI_BTCTOMA',
+                            'VAL_BRUT_DOAD_BTCTOMA',
+                            'VAL_LIQ_BTCTOMA',
+                            'VAL_EMOL_CBLC_BTCTOMA'])
         return df
-    
-
-
-# def valor_do_fundo_na_data(fundo, data):
-#     str_conn_sinqia = f"""Driver={{SQL Server}};Server={SRV_SINQIA};Database=SQCTRL;uid={USER_SQL_SINQIA};pwd={PASS_SQL_SINQIA}"""
-#     conn_sinqia = pyodbc.connect(str_conn_sinqia)
-        
-#     query = f"""SELECT Carteira AS Fundo, 
-#                 Data, 
-#                 Valor AS ValorData
-#             FROM MC51
-#             WHERE Indice = '@VCOTA'
-#                 AND Data = '{data}'
-#                 AND Carteira = '{fundo}'
-#             """
-#     df_result = pd.read_sql_query(query, conn_sinqia)
-#     df_result['ValorData'] = df_result['ValorData'].round(8)
-#     df_result['ValorData'] = df_result['ValorData'].map('R$ {:.8f}'.format)
-
-#     df_result['Fundo'] = df_result['Fundo'].astype(str)
-#     df_result = df_result.sort_values(by=['Fundo', 'Data'], ascending=[True, False])
-#     df_result = df_result.groupby('Fundo').first().reset_index()
-    
-#     df_result = df_result.sort_values(by='Data', ascending=False)
-    
-#     return df_result
-
