@@ -30,8 +30,8 @@ class Vericota:
     def atualizacao_britech(self):
         FROM_MAIL = self.sender
         TO_MAIL = ['tBPO@britech.com.br',
-                   'tadm.fiduciaria@ativainvestimentos.com.br']
-        CC_MAIL = ['tmateus.silva@ativainvestimentos.com.br', 'paloma.sette@ativainvestimentos.com.br']
+                   'adm.fiduciaria@ativainvestimentos.com.br']
+        CC_MAIL = ['mateus.silva@ativainvestimentos.com.br', 'paloma.sette@ativainvestimentos.com.br']
         SUBJECT = 'Cotas atuais dos fundos + Posições (BM&F, TCF, VCF e garantias)'
         MESSAGE = """<head>
                         <style>
@@ -123,8 +123,8 @@ class Vericota:
     def atualicao_variacao_cota(self):
         global data
         FROM_MAIL = self.sender
-        TO_MAIL = ["tbackofficefundos@ativainvestimentos.com.br"] 
-        CC_MAIL = ['tmateus.silva@ativainvestimentos.com.br', 'paloma.sette@ativainvestimentos.com.br']
+        TO_MAIL = ["backofficefundos@ativainvestimentos.com.br"] 
+        CC_MAIL = ['mateus.silva@ativainvestimentos.com.br', 'paloma.sette@ativainvestimentos.com.br']
         SUBJECT = 'Atualização de Variação de Cota'                
         
         data_atual = datetime.now().strftime("%d-%m-%Y_%H-%M")
