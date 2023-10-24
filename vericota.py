@@ -271,7 +271,6 @@ class Vericota:
             c.to_excel(writer, sheet_name='AOT(AÇÕES, OPC, TERMO)', index=False)
 
 
-
     def fundos_cotas_atualizadas(self,df, specific_date):
         global data
         # Verificar se a coluna 'Data' já está no formato datetime
