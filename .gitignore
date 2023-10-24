@@ -1,0 +1,12 @@
+__pycache__
+.env
+.vscode
+quarentine
+docs
+vericotavenv
+vericota
+Logs
+site
+LogsBackoffice
+Rentabilidades.xlsx
+fundos_cotasAtuais.xlsx
